@@ -1,15 +1,19 @@
 package com.exam;
 
 import org.springframework.boot.CommandLineRunner;
+import org.ocpsoft.rewrite.servlet.RewriteFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import javax.faces.webapp.FacesServlet;
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import java.util.Arrays;
+import java.util.EnumSet;
 
 /**
  * Created by franc on 10/04/2021.
@@ -21,15 +25,17 @@ public class Application {
     }
 
     @Bean
-    ServletRegistrationBean jsfServletRegistration (ServletContext servletContext) {
-        //spring boot only works if this is set
-        servletContext.setInitParameter("com.sun.faces.forceLoadConfiguration", Boolean.TRUE.toString());
+    public ServletRegistrationBean servletRegistrationBean() {
+        FacesServlet servlet = new FacesServlet();
+        return new ServletRegistrationBean(servlet, "*.jsf");
+    }
 
-        //registration
-        ServletRegistrationBean srb = new ServletRegistrationBean();
-        srb.setServlet(new FacesServlet());
-        srb.setUrlMappings(Arrays.asList("*.xhtml"));
-        srb.setLoadOnStartup(1);
-        return srb;
+    @Bean
+    public FilterRegistrationBean rewriteFilter() {
+        FilterRegistrationBean rwFilter = new FilterRegistrationBean(new RewriteFilter());
+        rwFilter.setDispatcherTypes(EnumSet.of(DispatcherType.FORWARD, DispatcherType.REQUEST,
+                DispatcherType.ASYNC, DispatcherType.ERROR));
+        rwFilter.addUrlPatterns("/*");
+        return rwFilter;
     }
 }
