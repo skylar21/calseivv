@@ -10,8 +10,20 @@
 </h:head>
 
 <h:body style="margin-left:50px">
-    <h2>PrimeFaces Linear Chart Example</h2>
-    <p:chart type="line" model="#{lineChartBean.lineModel}" style="height:400px;width:600px"/>
-    <p:button value="Click Me"></p:button>
+    <h2>Graph</h2>
+    <p:chart type="line" model="#{lineChartBean.lineModel}" style="height:500px;width:800px"/>
+    <p:button value="Henlo"></p:button>
+    <div class="card">
+        <h:form>
+            <h:panelGrid columns="3" cellpadding="5">
+                <p:photoCam widgetVar="pc" listener="#{photoCamView.oncapture}" update="photo"/>
+                <p:commandButton type="button" value="Capture" onclick="PF('pc').capture()"/>
+                <p:outputPanel id="photo">
+                    <p:graphicImage name="demo/images/photocam/#{photoCamView.filename}.jpeg"
+                                    rendered="#{not empty photoCamView.filename}"/>
+                </p:outputPanel>
+            </h:panelGrid>
+        </h:form>
+    </div>
 </h:body>
 </html>
